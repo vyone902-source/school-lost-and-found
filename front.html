@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Lost and Found Application</title>
+
+<style>
+
+/* GENERAL SETTINGS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f3f6fb;
+    color: #263449;
+}
+
+/* LOGIN SCREEN */
+.login-screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #17365d, #315987);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 99999;
+}
+
+.login-box {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+}
+
+.login-logo {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.login-box h1 {
+    color: #17365d;
+    margin-bottom: 10px;
+}
+
+.login-box > p {
+    color: #718096;
+    margin-bottom: 25px;
+}
+
+.login-box form {
+    text-align: left;
+}
+
+#loginError {
+    color: red;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.app-hidden {
+    display: none !important;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #17365d;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 30px 18px;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 45px;
+}
+
+.sidebar nav a {
+    display: block;
+    color: #dce6f5;
+    text-decoration: none;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #315987;
+    color: white;
+}
+
+.sidebar-footer {
+    position: absolute;
+    bottom: 30px;
+    line-height: 1.6;
+    color: #dce6f5;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.topbar h2 {
+    margin-bottom: 7px;
+}
+
+.topbar p {
+    color: #718096;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #edf3fb;
+    padding: 10px 15px;
+    border-radius: 25px;
+}
+
+/* DASHBOARD */
+section {
+    margin-bottom: 40px;
+    scroll-margin-top: 25px;
+}
+
+.dashboard h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.section-description {
+    color: #718096;
+    margin-bottom: 25px;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border-left: 4px solid #315987;
+}
+
+.card-icon {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    color: #718096;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.card h2 {
+    font-size: 30px;
+    color: #17365d;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: #8995a5;
+    font-size: 13px;
+}
+
+/* FORMS AND SECTIONS */
+.form-section,
+.items-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.form-section h2,
+.items-section h2 {
+    margin-bottom: 10px;
+    color: #17365d;
+}
+
+.form-section > p {
+    color: #718096;
+    margin-bottom: 25px;
+}
+
+form {
+    max-width: 650px;
+}
+
+label {
+    display: block;
+    margin: 17px 0 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* INPUT FIELDS */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d5dce6;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #315987;
+    box-shadow: 0 0 0 3px rgba(49,89,135,0.1);
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* BUTTONS */
+button {
+    background: #17365d;
+    color: white;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-top: 18px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #315987;
+}
+
+.logout-button {
+    background: #c0392b;
+    margin: 0;
+    padding: 10px 16px;
+}
+
+.logout-button:hover {
+    background: #962d22;
+}
+
+/* SEARCH */
+#searchInput {
+    max-width: 650px;
+}
+
+#searchButton,
+#showAllButton {
+    margin-right: 8px;
+}
+
+/* ITEM CARDS */
+.item-results {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.item-card {
+    border: 1px solid #e1e7ef;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fbfcfe;
+}
+
+.item-card h3 {
+    color: #17365d;
+    margin-bottom: 12px;
+}
+
+.item-card p {
+    margin-bottom: 9px;
+    color: #596779;
+    font-size: 14px;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.lost {
+    background: #ffe5e5;
+    color: #c0392b;
+}
+
+.found {
+    background: #e1f5e8;
+    color: #218c4a;
+}
+
+.claimed {
+    background: #e5e9f5;
+    color: #344e86;
+}
+
+.claim-button {
+    background: #218c4a;
+    padding: 9px 14px;
+    margin-top: 10px;
+}
+
+.delete-button {
+    background: #c0392b;
+    padding: 9px 14px;
+    margin-left: 5px;
+}
+
+.empty-message {
+    color: #718096;
+    grid-column: 1 / -1;
+}
+
+/* TABLET RESPONSIVENESS */
+@media (max-width: 900px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .item-results {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 650px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    .logo {
+        margin-bottom: 20px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .login-box {
+        padding: 25px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+    <!-- LOGIN PAGE -->
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+        <div class="login-logo">🎒</div>
+
+        <h1>School Lost & Found</h1>
+
+        <p>Login to access the application</p>
+
+        <form id="loginForm">
+
+            <label>Username</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter your username"
+                required
+            >
+
+            <label>Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button type="submit">Login</button>
+
+            <p id="loginError"></p>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">🎒 Lost & Found</div>
+
+    <nav>
+        <a href="#dashboard" class="active">🏠 Dashboard</a>
+        <a href="#report-lost">📦 Report Lost Item</a>
+        <a href="#report-found">🔍 Report Found Item</a>
+        <a href="#search">🔎 Search Items</a>
+        <a href="#items">📋 All Items</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <p>School Lost & Found</p>
+        <small>Management Application</small>
+    </div>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+    <header class="topbar">
+        <div>
+            <h2>School Lost and Found</h2>
+            <p>Welcome to your school item recovery system.</p>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-profile">
+    <p>Logged in as: <span id="currentUser"></span></p>
+    <button id="logoutButton" onclick="logout()">Logout</button>
+</div>
+            <span>👤</span>
+            <p>Student</p>
+        </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="dashboard">
+
+        <h1>Dashboard</h1>
+
+        <p class="section-description">
+            Manage and track lost and found items within your school.
+        </p>
+
+        <div class="dashboard-cards">
+<div class="card">
+    <div class="card-icon">📊</div>
+    <h3>Total Items</h3>
+    <h2 id="totalCount">0</h2>
+    <p>All reported items</p>
+</div>
+            <div class="card">
+                <div class="card-icon">📦</div>
+                <h3>Lost Items</h3>
+                <h2 id="lostCount">0</h2>
+                <p>Reported lost items</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🔍</div>
+                <h3>Found Items</h3>
+                <h2 id="foundCount">0</h2>
+                <p>Reported found items</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">✅</div>
+                <h3>Claimed Items</h3>
+                <h2 id="claimedCount">0</h2>
+                <p>Items returned to owners</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- REPORT LOST ITEM -->
+    <section id="report-lost" class="form-section">
+
+        <h2>Report a Lost Item</h2>
+        <p>Enter the details of an item you have lost.</p>
+
+        <form id="lostForm">
+
+            <label>Item Name</label>
+            <input type="text" id="lostName" required>
+
+            <label>Category</label>
+            <select id="lostCategory" required>
+                <option value="">Select category</option>
+                <option>Electronics</option>
+                <option>Books</option>
+                <option>Clothing</option>
+                <option>Accessories</option>
+                <option>Other</option>
+            </select>
+
+            <label>Last Seen Location</label>
+            <input type="text" id="lostLocation" required>
+
+            <label>Description</label>
+            <textarea id="lostDescription" required></textarea>
+            <label>Upload Item Image</label>
+<input type="file" id="lostImage" accept="image/*">
+
+<img id="lostImagePreview" style="display:none; width:150px; margin:10px 0; border-radius:8px;">
+
+            <button type="submit">Submit Lost Item</button>
+
+        </form>
+    </section>
+
+    <!-- REPORT FOUND ITEM -->
+    <section id="report-found" class="form-section">
+
+        <h2>Report a Found Item</h2>
+        <p>Enter the details of an item you have found.</p>
+
+        <form id="foundForm">
+
+            <label>Item Name</label>
+            <input type="text" id="foundName" required>
+
+            <label>Category</label>
+            <select id="foundCategory" required>
+                <option value="">Select category</option>
+                <option>Electronics</option>
+                <option>Books</option>
+                <option>Clothing</option>
+                <option>Accessories</option>
+                <option>Other</option>
+            </select>
+
+            <label>Found Location</label>
+            <input type="text" id="foundLocation" required>
+
+            <label>Description</label>
+            <textarea id="foundDescription" required></textarea>
+            <label>Upload Item Image</label>
+<input type="file" id="foundImage" accept="image/*">
+
+<img id="foundImagePreview" style="display:none; width:150px; margin:10px 0; border-radius:8px;">
+
+            <button type="submit">Submit Found Item</button>
+
+        </form>
+    </section>
+
+    <!-- SEARCH -->
+    <section id="search" class="form-section">
+
+        <h2>Search for Items</h2>
+        <p>Find lost or found belongings in the system.</p>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by item name, category or location..."
+        >
+        <label>Filter by Category</label>
+
+<select id="categoryFilter">
+    <option value="">All Categories</option>
+    <option value="Electronics">Electronics</option>
+    <option value="Books">Books</option>
+    <option value="Clothing">Clothing</option>
+    <option value="Accessories">Accessories</option>
+    <option value="Other">Other</option>
+</select>
+<label>Filter by Status</label>
+
+<select id="statusFilter">
+    <option value="">All Statuses</option>
+    <option value="Lost">Lost</option>
+    <option value="Found">Found</option>
+    <option value="Claimed">Claimed</option>
+</select>
+
+        <button type="button" id="searchButton">Search</button>
+        <button type="button" id="showAllButton">Show All Items</button>
+
+    </section>
+
+    <!-- ALL ITEMS -->
+    <section id="items" class="items-section">
+
+        <h2>Reported Items</h2>
+
+        <div id="itemResults" class="item-results">
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    function logout() {
+    localStorage.removeItem("loggedInUser");
+    showLogin();
+}
+    /* LOGIN FUNCTIONALITY */
+
+const loginForm = document.getElementById("loginForm");
+
+const loginScreen = document.getElementById("loginScreen");
+
+const loginError = document.getElementById("loginError");
+
+
+function showApplication() {
+
+    loginScreen.style.display = "none";
+
+    document.querySelector(".sidebar").style.display = "block";
+
+    document.querySelector(".main-content").style.display = "block";
+
+}
+
+
+function showLogin() {
+
+    loginScreen.style.display = "flex";
+
+    document.querySelector(".sidebar").style.display = "none";
+
+    document.querySelector(".main-content").style.display = "none";
+
+}
+
+
+/* CHECK LOGIN FORM */
+
+loginForm.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+
+    const password = document.getElementById("password").value.trim();
+
+    if (username.length >= 2 && password.length >= 4) {
+
+        localStorage.setItem("loggedInUser", username);
+
+        loginError.textContent = "";
+
+        showApplication();
+
+        document.getElementById("currentUser").textContent = username;
+
+    } else {
+
+        loginError.textContent = "Enter a username and password with at least 4 password characters.";
+
+    }
+
+});
+
+
+/* CHECK IF USER IS ALREADY LOGGED IN */
+
+const savedUser = localStorage.getItem("loggedInUser");
+
+if (savedUser) {
+
+    showApplication();
+
+    document.getElementById("currentUser").textContent = savedUser;
+
+} else {
+
+    showLogin();
+
+}
+/* IMAGE PREVIEW FUNCTION */
+
+function previewImage(inputId, previewId) {
+
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+
+    input.addEventListener("change", function() {
+
+        const file = this.files[0];
+
+        if (file) {
+
+            if (!file.type.startsWith("image/")) {
+                alert("Please select an image file.");
+                this.value = "";
+                preview.style.display = "none";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                preview.src = event.target.result;
+                preview.style.display = "block";
+            };
+
+            reader.readAsDataURL(file);
+
+        } else {
+            preview.style.display = "none";
+        }
+
+    });
+}
+
+
+/* ACTIVATE IMAGE PREVIEWS */
+
+previewImage("lostImage", "lostImagePreview");
+
+previewImage("foundImage", "foundImagePreview");
+/* GET ITEMS FROM DATABASE */
+let items = [];
+
+async function loadItems() {
+    try {
+        const response = await fetch("http://localhost:5000/api/items");
+
+        if (!response.ok) {
+            throw new Error("Could not load items");
+        }
+
+        items = await response.json();
+
+        displayItems();
+        updateDashboard();
+
+    } catch (error) {
+        console.error("Error loading items:", error);
+        alert("Could not connect to the database.");
+    }
+}
+/* SAVE ITEMS */
+function saveItems() {
+    localStorage.setItem(
+        "schoolLostFoundItems",
+        JSON.stringify(items)
+    );
+}
+
+
+/* UPDATE DASHBOARD */
+function updateDashboard() {
+    document.getElementById("totalCount").textContent =
+    items.length;
+
+    document.getElementById("lostCount").textContent =
+        items.filter(item => item.status === "Lost").length;
+
+    document.getElementById("foundCount").textContent =
+        items.filter(item => item.status === "Found").length;
+
+    document.getElementById("claimedCount").textContent =
+        items.filter(item => item.status === "Claimed").length;
+}
+
+
+/* DISPLAY ITEMS */
+function displayItems(itemsToDisplay = items) {
+
+    const results = document.getElementById("itemResults");
+
+    results.innerHTML = "";
+
+    if (itemsToDisplay.length === 0) {
+        results.innerHTML =
+            '<p class="empty-message">No items found.</p>';
+        return;
+    }
+
+    itemsToDisplay.forEach(item => {
+
+        const card = document.createElement("div");
+        card.className = "item-card";
+
+        const title = document.createElement("h3");
+        title.textContent = item.name;
+
+        const category = document.createElement("p");
+        category.textContent = "Category: " + item.category;
+
+        const location = document.createElement("p");
+        location.textContent = "Location: " + item.location;
+
+        const description = document.createElement("p");
+        description.textContent = "Description: " + item.description;
+        if (item.image) {
+
+    const image = document.createElement("img");
+
+    image.src = item.image;
+
+    image.alt = item.name;
+
+    image.style.width = "180px";
+
+    image.style.height = "140px";
+
+    image.style.objectFit = "cover";
+
+    image.style.borderRadius = "10px";
+
+    card.appendChild(image);
+}
+
+        const status = document.createElement("span");
+        status.className = "status " + item.status.toLowerCase();
+        status.textContent = item.status;
+
+        card.appendChild(title);
+        card.appendChild(category);
+        card.appendChild(location);
+        card.appendChild(description);
+        card.appendChild(status);
+
+        if (item.status !== "Claimed") {
+
+            const claimButton = document.createElement("button");
+            claimButton.className = "claim-button";
+            claimButton.textContent = "Mark as Claimed";
+
+            claimButton.onclick = async function() {
+                const confirmed = confirm(
+                    "Are you sure this item has been claimed?"
+                );
+
+                if (confirmed) {
+    try {
+        const response = await fetch(
+            `http://localhost:5000/api/items/${item.id}/claim`,
+            {
+                method: "PUT"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to claim item");
+        }
+
+        await loadItems();
+
+        alert("Item marked as claimed!");
+
+    } catch (error) {
+        console.error(error);
+        alert("Could not update item status.");
+    }
+}
+            };
+            
+
+            card.appendChild(claimButton);
+        }
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-button";
+        deleteButton.textContent = "Delete";
+
+       deleteButton.onclick = async function() {
+    const confirmed = confirm(
+        "Are you sure you want to delete this item?"
+    );
+
+    if (confirmed) {
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/items/${item.id}`,
+                { method: "DELETE" }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to delete item");
+            }
+
+            await loadItems();
+
+        } catch (error) {
+            console.error(error);
+            alert("Could not delete item.");
+        }
+    }
+};
+
+        card.appendChild(deleteButton);
+        results.appendChild(card);
+
+    });
+
+
+}
+
+
+
+/* REPORT LOST ITEM */
+document.getElementById("lostForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const imageFile = document.getElementById("lostImage").files[0];
+
+        let imageData = "";
+
+        if (imageFile) {
+
+            if (imageFile.size > 5 * 1024 * 1024) {
+                alert("Please select an image smaller than 1MB.");
+                return;
+            }
+
+            imageData = await new Promise(resolve => {
+                const reader = new FileReader();
+
+                reader.onload = event => resolve(event.target.result);
+
+                reader.readAsDataURL(imageFile);
+            });
+        }
+
+      try {
+    const response = await fetch("http://localhost:5000/api/items", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: document.getElementById("lostName").value.trim(),
+            category: document.getElementById("lostCategory").value,
+            location: document.getElementById("lostLocation").value.trim(),
+            description: document.getElementById("lostDescription").value.trim(),
+            image: imageData,
+            status: "Lost"
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to report lost item");
+    }
+
+    await loadItems();
+
+    this.reset();
+
+    document.getElementById("lostImagePreview").style.display = "none";
+
+    alert("Lost item reported successfully!");
+
+} catch (error) {
+    console.error(error);
+    alert("Could not save the lost item. Please try again.");
+}
+
+
+    
+
+    }
+);
+
+/* REPORT FOUND ITEM */
+document.getElementById("foundForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const imageFile = document.getElementById("foundImage").files[0];
+
+        let imageData = "";
+
+        if (imageFile) {
+
+            if (imageFile.size > 1024 * 1024) {
+                alert("Please select an image smaller than 1MB.");
+                return;
+            }
+
+            imageData = await new Promise(resolve => {
+                const reader = new FileReader();
+
+                reader.onload = event => resolve(event.target.result);
+
+                reader.readAsDataURL(imageFile);
+            });
+        }
+
+try {
+    const response = await fetch("http://localhost:5000/api/items", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: document.getElementById("foundName").value.trim(),
+            category: document.getElementById("foundCategory").value,
+            location: document.getElementById("foundLocation").value.trim(),
+            description: document.getElementById("foundDescription").value.trim(),
+            image: imageData,
+            status: "Found"
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to report found item");
+    }
+
+    await loadItems();
+
+    this.reset();
+
+    document.getElementById("foundImagePreview").style.display = "none";
+
+    alert("Found item reported successfully!");
+
+} catch (error) {
+    console.error(error);
+    alert("Could not save the found item. Please try again.");
+}
+       
+    }
+);
+
+/* SEARCH AND FILTER ITEMS */
+function searchItems()
+ {
+
+    const searchValue = document.getElementById("searchInput")
+        .value.trim().toLowerCase();
+
+    const categoryValue = document.getElementById("categoryFilter").value;
+
+    const statusValue = document.getElementById("statusFilter").value;
+
+    const filteredItems = items.filter(item => {
+
+        const matchesSearch =
+            item.name.toLowerCase().includes(searchValue) ||
+            item.category.toLowerCase().includes(searchValue) ||
+            item.location.toLowerCase().includes(searchValue);
+
+        const matchesCategory =
+            categoryValue === "" || item.category === categoryValue;
+
+        const matchesStatus =
+            statusValue === "" || item.status === statusValue;
+
+        return matchesSearch && matchesCategory && matchesStatus;
+
+    });
+
+    displayItems(filteredItems);
+}
+/* FILTER BY CATEGORY */
+document.getElementById("categoryFilter").addEventListener(
+    "change",
+    searchItems
+);
+/* SEARCH WHEN USER TYPES */
+document.getElementById("searchInput").addEventListener(
+    "input",
+    searchItems
+);
+
+/* FILTER BY STATUS */
+
+document.getElementById("statusFilter").addEventListener(
+    "change",
+    searchItems
+);
+
+/* SHOW ALL ITEMS */
+
+document.getElementById("showAllButton").addEventListener(
+    "click",
+    function() {
+
+        document.getElementById("searchInput").value = "";
+        document.getElementById("categoryFilter").value = "";
+        document.getElementById("statusFilter").value = "";
+
+        displayItems();
+
+    }
+);
+
+
+/* INITIAL DISPLAY */
+loadItems();
+</script>
+
+</body>
+</html>
